@@ -15,7 +15,7 @@ if(CONFIG_SHIELD_PROSPECTOR_SCANNER)
   zephyr_library_sources(src/scanner_battery_widget.c)  # Battery widget for split keyboard display
   zephyr_library_sources(src/scanner_battery_status_widget.c)  # Scanner's own battery status widget
   zephyr_library_sources(src/connection_status_widget.c)  # YADS-style connection status widget
-  zephyr_library_sources(src/layer_status_widget.c)  # YADS-style large layer display widget
+  zephyr_library_sources(src/kana_status_widget.c)  # YADS-style large layer display widget
   zephyr_library_sources(src/modifier_status_widget.c)  # Modifier key status widget (C S A G)
   # zephyr_library_sources(src/profile_status_widget.c)  # Removed - redundant with connection_status_widget
   zephyr_library_sources(src/signal_status_widget.c)  # RSSI + reception rate widget
@@ -27,4 +27,8 @@ if(CONFIG_SHIELD_PROSPECTOR_SCANNER)
   # NerdFont for modifier symbols (from YADS project - MIT License)
   zephyr_library_sources(src/fonts/NerdFonts_Regular_20.c)
   zephyr_library_sources(src/fonts/NerdFonts_Regular_40.c)
+  
+  # Image resources
+  zephyr_library_sources(src/img_a.c)
+  zephyr_library_sources(src/img_naginata.c)
 endif()

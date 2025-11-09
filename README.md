@@ -1,9 +1,43 @@
+# Prospector 薙刀式version
+
+ZMK薙刀式は、キーボードに薙刀式かな変換を内蔵しており、Bluetooth接続したPCやタブレット、スマホに追加ソフトのインストールなしに薙刀式かな入力ができます。
+キーボードが、英字入力モードなのか、薙刀式モードなのかを、Prospectorに表示するように改良しました。
+
+薙刀式のロゴイメージは大岡俊彦氏に帰属します。
+
 # Prospector ZMK Module
+
+**Version**: 1.1.1 - **CRITICAL SAFETY UPDATE**  
+**License**: MIT  
+**Status**: Production Ready - Critical Fix Release  
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![ZMK Compatible](https://img.shields.io/badge/ZMK-compatible-blue)](https://zmk.dev/)
+[![Version](https://img.shields.io/badge/version-v1.1.1-critical-red)](https://github.com/t-ogura/prospector-zmk-module/releases)
 
-**Prospector ZMK Module** provides status display capabilities for ZMK keyboards, supporting both independent scanner mode and traditional dongle mode. This module enables real-time keyboard status broadcasting and YADS-style professional UI displays.
+## 🚨 **URGENT: v1.1.1 Critical Safety Update**
+
+**⚠️ IMMEDIATE UPGRADE RECOMMENDED**: v1.1.0 users experiencing startup failures should upgrade immediately.
+
+**Issue Fixed**: Scanner devices without APDS9960 ambient light sensor were failing to boot.
+**Solution**: Automatic hardware detection with safe fallback modes implemented.
+
+👉 **[See Release Notes for Upgrade Instructions →](https://github.com/t-ogura/zmk-config-prospector/blob/main/docs/RELEASES.md#v111---critical-safety-update-2025-08-26)**
+
+**Prospector ZMK Module** provides advanced status monitoring capabilities for ZMK keyboards, enabling real-time BLE advertisement of keyboard status and professional scanner-based display functionality.
+
+## 🚀 **For End Users - Start Here!**
+
+**⚠️ This is a ZMK module - you need the complete scanner configuration!**
+
+👉 **Go to the main project**: **[zmk-config-prospector](https://github.com/t-ogura/zmk-config-prospector)**
+
+The main repository contains:
+- ✅ **Complete scanner firmware** with automated GitHub Actions builds
+- ✅ **Step-by-step setup guide** for keyboards and scanner devices
+- ✅ **Hardware wiring diagrams** and component specifications
+- ✅ **Configuration examples** for all keyboard types (split, regular, etc.)
+- ✅ **Troubleshooting guide** and comprehensive user documentation
 
 ## 📦 What's Included
 
@@ -64,7 +98,7 @@ manifest:
       import: app/west.yml
     - name: prospector-zmk-module
       remote: prospector
-      revision: feature/yads-widget-integration
+      revision: feature/v1.1.1-safety-fix
       path: modules/prospector-zmk-module
 ```
 
@@ -74,10 +108,10 @@ Add to your keyboard's `.conf` file:
 CONFIG_ZMK_STATUS_ADVERTISEMENT=y
 CONFIG_ZMK_STATUS_ADV_KEYBOARD_NAME="MyBoard"
 
-# Power optimization (recommended)
+# v1.1.0 enhanced power optimization (15x improvement)
 CONFIG_ZMK_STATUS_ADV_ACTIVITY_BASED=y
-CONFIG_ZMK_STATUS_ADV_ACTIVE_INTERVAL_MS=200
-CONFIG_ZMK_STATUS_ADV_IDLE_INTERVAL_MS=1000
+CONFIG_ZMK_STATUS_ADV_ACTIVE_INTERVAL_MS=100    # 10Hz active
+CONFIG_ZMK_STATUS_ADV_IDLE_INTERVAL_MS=30000    # 0.03Hz idle
 
 # Split keyboard support (if applicable)
 CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING=y
@@ -187,7 +221,12 @@ CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING=y
 # Core scanner features
 CONFIG_PROSPECTOR_MODE_SCANNER=y
 CONFIG_PROSPECTOR_MAX_KEYBOARDS=2
-CONFIG_PROSPECTOR_USE_AMBIENT_LIGHT_SENSOR=y
+
+# v1.1.1 SAFETY: Ambient light sensor (disabled by default)
+# Only enable if you have APDS9960 hardware connected
+# CONFIG_PROSPECTOR_USE_AMBIENT_LIGHT_SENSOR=y
+# CONFIG_SENSOR=y
+# CONFIG_APDS9960=y
 
 # Display customization
 CONFIG_PROSPECTOR_FIXED_BRIGHTNESS=80
@@ -346,35 +385,52 @@ CONFIG_LOG=y
 CONFIG_ZMK_LOG_LEVEL_DBG=y
 ```
 
-## 📄 License and Attribution
+## 🧾 Credits and Attribution
 
-### Main License
-This project is licensed under the **MIT License**.
+### Original Inspiration
+This project builds upon the innovative **Prospector** hardware platform:
 
-### Third-Party Components
+- **Original Prospector Project**: [prospector](https://github.com/carrefinho/prospector) by carrefinho
+- **Original Firmware**: [prospector-zmk-module](https://github.com/carrefinho/prospector-zmk-module)
+- **Hardware Design**: Seeeduino XIAO BLE + Waveshare 1.69" Round LCD concept
+- **Community**: ZMK ecosystem contributors and hardware designers
 
-#### YADS Integration
+### Key Third-Party Integrations
+
+#### YADS (Yet Another Dongle Screen)
 - **License**: MIT License
-- **Source**: [YADS Project](https://github.com/pashutk/yads)
-- **Usage**: UI widget designs, NerdFont symbol mappings, LVGL patterns
+- **Source**: [zmk-dongle-screen](https://github.com/janpfischer/zmk-dongle-screen)
+- **Attribution**: UI widget design patterns, NerdFont modifier symbols, LVGL implementation inspiration
+- **Usage**: Professional display widget architecture
 
-#### Original Prospector  
-- **License**: MIT License
-- **Usage**: Hardware design inspiration, display driver foundation
-
-#### ZMK Firmware
+#### ZMK Firmware Framework
 - **License**: MIT License  
 - **Source**: [ZMK Project](https://github.com/zmkfirmware/zmk)
-- **Usage**: Base firmware platform and APIs
+- **Usage**: Core firmware platform, BLE APIs, configuration system
 
 #### NerdFonts
 - **License**: MIT License
 - **Source**: [NerdFonts](https://www.nerdfonts.com/)
 - **Usage**: Modifier key symbols (󰘴󰘶󰘵󰘳)
 
+### Development Attribution
+- **Lead Development**: OpenAI Claude (Sonnet)
+- **Hardware Integration**: Community feedback and real hardware testing
+- **Documentation**: Comprehensive user guides and technical specifications
+
 ### Font Licenses
 - **Montserrat**: SIL Open Font License 1.1
 - **Unscii**: Public Domain
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+### Disclaimer
+This project is an independent development that evolved from hardware concepts
+in the broader ZMK/Prospector ecosystem. While inspired by existing work,
+the software implementation, features, and documentation represent significant
+original development efforts.
 
 ## 🤝 Contributing
 

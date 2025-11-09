@@ -17,7 +17,7 @@
 #include <zmk/usb.h>
 #include "scanner_battery_widget.h"
 #include "connection_status_widget.h"
-#include "layer_status_widget.h"
+#include "kana_status_widget.h"
 #include "modifier_status_widget.h"
 // Profile widget removed - connection status already handled by connection_status_widget
 #include "signal_status_widget.h"
@@ -36,9 +36,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #define CONFIG_PROSPECTOR_FIXED_BRIGHTNESS 60   // 60% default
 #endif
 
-// External brightness control functions
-void prospector_set_brightness(uint8_t brightness_percent);
-void prospector_resume_brightness(void);
+// Brightness control functions removed in v1.1.1 simplification
+// External brightness control is handled by brightness_control.c
 
 #if IS_ENABLED(CONFIG_PROSPECTOR_MODE_SCANNER) && IS_ENABLED(CONFIG_ZMK_DISPLAY)
 
@@ -56,7 +55,9 @@ static struct zmk_widget_wpm_status wpm_widget;
 struct zmk_widget_debug_status debug_widget;
 
 // Scanner's own battery status widget (top-right corner)
+#if IS_ENABLED(CONFIG_PROSPECTOR_BATTERY_SUPPORT)
 static struct zmk_widget_scanner_battery_status scanner_battery_widget;
+#endif
 
 #if IS_ENABLED(CONFIG_PROSPECTOR_BATTERY_SUPPORT)
 // Battery monitoring state - global to manage start/stop properly
@@ -470,14 +471,14 @@ static void check_advertisement_frequency(void) {
         if (!frequency_dimmed) {
             LOG_INF("Advertisement frequency low (%dms interval), dimming to %d%%", 
                     interval, CONFIG_PROSPECTOR_ADV_FREQUENCY_DIM_BRIGHTNESS);
-            prospector_set_brightness(CONFIG_PROSPECTOR_ADV_FREQUENCY_DIM_BRIGHTNESS);
+            // prospector_set_brightness(CONFIG_PROSPECTOR_ADV_FREQUENCY_DIM_BRIGHTNESS);
             frequency_dimmed = true;
         }
     } else {
         // Frequency increased (keyboard became active), restore brightness
         if (frequency_dimmed) {
             LOG_INF("Advertisement frequency restored (%dms interval), resuming normal brightness", interval);
-            prospector_resume_brightness();
+            // prospector_resume_brightness(); // Function removed in v1.1.1
             frequency_dimmed = false;
         }
     }
@@ -532,10 +533,10 @@ static void update_display_from_scanner(struct zmk_status_scanner_event_data *ev
         // Reduce brightness when no keyboards are connected
 #if IS_ENABLED(CONFIG_PROSPECTOR_USE_AMBIENT_LIGHT_SENSOR)
         // When ALS is enabled, set to minimum brightness
-        prospector_set_brightness(CONFIG_PROSPECTOR_ALS_MIN_BRIGHTNESS);
+        // prospector_set_brightness(CONFIG_PROSPECTOR_ALS_MIN_BRIGHTNESS);
 #else
         // When ALS is disabled, reduce to 20% of configured brightness
-        prospector_set_brightness(CONFIG_PROSPECTOR_FIXED_BRIGHTNESS / 5);
+        // prospector_set_brightness(CONFIG_PROSPECTOR_FIXED_BRIGHTNESS / 5);
 #endif
         
         LOG_INF("Display updated: No keyboards - all widgets reset, brightness reduced");
@@ -580,7 +581,7 @@ static void update_display_from_scanner(struct zmk_status_scanner_event_data *ev
                 zmk_widget_wpm_status_update(&wpm_widget, kbd);
                 
                 // Resume normal brightness control when keyboard is connected
-                prospector_resume_brightness();
+                // prospector_resume_brightness(); // Function removed in v1.1.1
                 
 #if IS_ENABLED(CONFIG_PROSPECTOR_BATTERY_SUPPORT)
                 // Start battery monitoring when keyboards become active
@@ -675,7 +676,7 @@ lv_obj_t *zmk_display_status_screen() {
     
     // Layer status widget in the center (horizontal layer display) - moved down 10px
     zmk_widget_layer_status_init(&layer_widget, screen);
-    lv_obj_align(zmk_widget_layer_status_obj(&layer_widget), LV_ALIGN_CENTER, 0, -10); // Back to center
+    lv_obj_align(zmk_widget_layer_status_obj(&layer_widget), LV_ALIGN_CENTER, 0, 10); // Back to center
     
     // Modifier status widget between layer and battery - moved down 10px
     zmk_widget_modifier_status_init(&modifier_widget, screen);

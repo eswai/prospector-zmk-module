@@ -36,6 +36,10 @@ config ZMK_BATTERY
 config LVGL
     default y
 
+config LVGL_IMG_CACHE_DEF_SIZE
+    int
+    default 1
+
 config DISPLAY_LOG_LEVEL
     default 1
 
